@@ -101,7 +101,7 @@ jobs:
       - name: Resolve spec files for this container
         id: specs
         run: |
-          SPEC=$(node cypress/e2e/index.js \
+          SPEC=$(node index.js \
             ${{ matrix.container }} \
             ${{ inputs.numberOfParallel }} \
             ./${{ inputs.folderName }})

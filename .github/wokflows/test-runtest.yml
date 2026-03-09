@@ -1,0 +1,46 @@
+name: Test – Run Cypress via Reusable Workflow
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Trigger this workflow to validate the reusable runtest.yml.
+# Runs on every push to main/master, on any PR, and can be triggered manually
+# from the GitHub Actions UI (workflow_dispatch) with custom overrides.
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  workflow_dispatch:
+    inputs:
+      folderName:
+        description: 'Spec folder path'
+        required: false
+        default: 'cypress/e2e'
+      reportFolderName:
+        description: 'Report output folder'
+        required: false
+        default: 'reports'
+      numberOfParallel:
+        description: 'Number of parallel containers'
+        required: false
+        default: '3'
+      environmentVariables:
+        description: 'Comma-separated --env key=value pairs'
+        required: false
+        default: ''
+      browserName:
+        description: 'Browser (chrome | firefox | edge)'
+        required: false
+        default: 'chrome'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Delegate everything to the reusable workflow.
+  # For push/PR events the defaults in runtest.yml are used.
+  # For workflow_dispatch the user-supplied values are forwarded.
+  # ---------------------------------------------------------------------------
+  invoke-reusable:
+    name: Call runtest.yml
+    uses: ./.github/wokflows/runtest.yml
+    with:
+      folderName:          ${{ github.event.inputs.folderName          || 'cypress/e2e' }}
+      reportFolderName:    ${{ github.event.inputs.reportFolderName    || 'reports' }}
+      numberOfParallel:    ${{ fromJson(github.event.inputs.numberOfParallel || '3') }}
+      environmentVariables: ${{ github.event.inputs.environmentVariables || '' }}
+      browserName:         ${{ github.event.inputs.browserName         || 'chrome' }}
