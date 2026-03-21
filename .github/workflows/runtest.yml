@@ -80,8 +80,15 @@ jobs:
         container: ${{ fromJson(needs.setup.outputs.containers) }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout caller repository
         uses: actions/checkout@v4
+
+      - name: Checkout workflow repository
+        uses: actions/checkout@v4
+        with:
+          repository: praveenjp12/cypress-parallel
+          path: .workflow-repo
+          ref: main
 
       # Cache node_modules across runs keyed on package-lock.json
       - name: Cache node modules
@@ -101,7 +108,7 @@ jobs:
       - name: Resolve spec files for this container
         id: specs
         run: |
-          SPEC=$(node index.js \
+          SPEC=$(node .workflow-repo/index.js \
             ${{ matrix.container }} \
             ${{ inputs.numberOfParallel }} \
             ./${{ inputs.folderName }})
