@@ -7,5 +7,10 @@ describe('template spec 3', () => {
     cy.visit('https://example.cypress.io')
     cy.get('non-existent-element').should('exist')
   })
+
+  it.skip('skips', () => {
+    cy.visit('https://example.cypress.io')
+    cy.get('non-existent-element').should('exist')
+  })
 })
 
